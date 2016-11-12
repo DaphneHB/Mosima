@@ -1,0 +1,165 @@
+
+;;;;;;;;;;;;;;;;;
+;; FUNCTIONS
+;;;;;;;;;;;;;;;;;
+
+;;;;;;;;;;;;
+;; INFOS
+;;;;;;;;;;;;
+
+; fonction appelée sur un agent
+to update-infos [other-turtle]
+  set lprofit profit
+  set leffort effort ; TODO a vérfier
+  set aeffort (observe-part-effort ([effort] of other-turtle))
+  set aprofit (profit-compute aeffort effort)
+  set profit (profit-compute effort aeffort)
+  set cumprof cumprof + profit
+  set cumeffort cumeffort + aeffort
+  ; on calcule les moyennes des voisins physiques (les 8 autours)
+  set neffort mean [effort] of turtles-on neighbors
+  set nprofit mean [profit] of turtles-on neighbors
+end
+
+;;;;;;;;;;;;
+;; NOISE
+;;;;;;;;;;;;
+
+to-report observe-part-effort [part-effort]
+  ifelse (Noise)
+  [ ; avec du bruit
+    ; on calcule le bruit voulu aléatoirement
+    ; pour 1% : entre 0.99 et 1.01 *effort
+    ; pour 50% : entre 0.5 et 1.5 *effort
+    ;; => bruit = (random noise*2) + 1 - noise
+    let rdn random (PercentageNoise * 2 / 100)
+    let bruit (rdn + 1 - (PercentageNoise / 100))
+    report part-effort * bruit
+  ]
+  [ ; sans bruit
+    ; on retourne la valeur exacte
+    report part-effort
+  ]
+end
+
+
+;;;;;;;;;;;;
+;; PROFIT
+;;;;;;;;;;;;
+
+;;; Renvoie le calcul de la fonction de profit pour l'agent i
+; ou ei est l'effort de i
+; ej l'effort j
+to-report profit-compute [ei ej]
+  ; pi_i = 5*sqrt(ei + ej) - ei**2
+  let racine sqrt (ei + ej)
+  let carre ei * ei
+  let res 5 * racine - carre
+  report res
+end
+
+;;;;;;;;;;;;
+;; EFFORT
+;;;;;;;;;;;;
+
+; Retourne le nombre couleur associé à l'effort actuel de l'agent, selon l'échelle choisie
+to-report color-effort
+  ifelse (ColorDisplayMode = "Chromatic Scale")
+  ;;;;;;;;;; chromatic scale : red (15)=high effort , blue (105)=low effort
+  [report chromatic-scale-effort]
+  ;;;;;;;;;; red scale
+  [report red-scale-effort]
+end
+
+; la couleur de l'effort selon une echelle de nuances de rouges
+to-report red-scale-effort
+  let coleff HigherEffort - effort ; on change pour plus de logique (0->high effort et 50->low effort)
+  ; red max = 12.5 (effort high) & red-min = 19.5 (effort low)
+  ; difference entre red max et min = 7
+  ; avec un décalage de 12 (red max)
+  let new-col (coleff * 7 / 50 ) + 12.5
+  report new-col  
+end
+
+; la couleur de l'effort selon une echelle chromatique de couleurs
+to-report chromatic-scale-effort
+  ;; Algo Maison compliqué moyen :
+  ; Si l'effort est de 0 -> 105 (bleu)
+  ; sinon on calcule :
+  ; couleur = (1/efort) * (valeur_bleu - valeur_rouge) ) + (valeur_rouge)
+  ;; Algo Maison simple mais pas parfait : (0->high effort et 50->low effort)
+  ; couleur = ((HigherEffort - effort) * (valeur_bleu - valeur_rouge)  / HigherEffort) + (valeur_rouge)
+  ;; Switch Case tout simple :
+  let coleff HigherEffort - effort ; on change pour plus de logique (0->high effort et 50->low effort)
+  let nb-col ((blue - red) / 10) + 1 ; nb de couleurs possibles entre le bleu et le rouge (s'incrémente de 10 en 10) - plus 1 pour ne pas oublier l'extremité
+  let step-effort (HigherEffort / nb-col) ; on calcul l'intervalle d'effort d'une couleur
+  let incr 1
+  ; tant qu'on a pas atteint le bon intervalle
+  while [coleff > (step-effort * incr)]
+  [set incr incr + 1]
+  ; le bon intervalle atteint ça signifie que l'effort est dans l'intervalle de couleur correspondant
+  let new-col (((incr - 1) * nb-col) + red) ; calcul de la nouvelle couleur
+  ;print (word "Couleur ancienne " col " ## Nouvelle couleur " new-col)
+  report new-col  
+end
+
+; Calcul un effort random pour l'agent
+to-report random-effort
+  report random HigherEffort
+end
+
+; Calcul de l'effort d'un shrinking effort agent
+to-report shrinking-effort
+  ; prend la moitie de son partenaire précédent
+  report (aeffort / 2)
+end
+
+; Calcul de l'effort d'un replicator agent
+to-report replicator-effort
+  ; prend l'effort qu'a réalisé son precédent partenaire
+  report aeffort
+end
+
+; Calcul de l'effort d'un rational agent
+to-report rational-effort
+  ; prend l'effort le plus adéquat selon son précédent partenaire
+  report aeffort ; TODO
+end
+
+; Calcul de l'effort d'un profit comparator agent
+to-report profit-comparator-effort
+  ; selon son propre profit et celui de son dernier partenaire
+  ; augmente ou diminue son effort à fournir
+  ifelse (aprofit < profit)
+  [report effort * 90 / 100] ; 90% de son effort courant
+  [report effort * 110 / 100] ; 110% de son effort courant
+end
+
+; Calcul de l'effort d'un average rational agent
+to-report average-rational-effort
+  ; prend l'effort le plus adéquat en réponse à l'effort moyen de ses anciens partenaires
+  let mean-aeffort (cumeffort / numinc)
+  report aeffort ; TODO
+end
+
+; Calcul de l'effort d'un winner imitator agent
+to-report winner-imitator-effort
+  ; choisi entre son effort courant et celui de son partenaire celui qui donne le profit le plus élevé
+  ifelse (aprofit > profit)
+  [report aeffort]
+  [report effort]
+end
+
+; Calcul de l'effort d'un effort comparator agent
+to-report effort-comparator-effort
+  ; augmente son effort si celui ci est inférieur à celui de son precedent partenaire sinon le diminue
+  ifelse (aeffort < effort)
+  [report effort * 90 / 100] ; 90% de son effort courant
+  [report effort * 110 / 100] ; 110% de son effort courant
+end
+
+; Calcul de l'effort d'un averager agent
+to-report averager-effort
+  ; prend la moyenne entre son effort et celui de son partenaire precedent
+  report (aeffort + effort) / 2
+end

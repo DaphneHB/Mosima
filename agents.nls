@@ -1,0 +1,95 @@
+
+;;;;;;;;;;;;;;;;;
+;; LAUNCHING
+;;;;;;;;;;;;;;;;;
+
+;; TODO no wrap ?
+
+to go-agents
+  move-agents
+  interact-agents
+  update-agents
+end
+
+; Déplacement des agents
+to move-agents
+  ask turtles [
+    ; on remet le patch sur lequel on est en blanc avant de bouger
+    set pcolor white
+    ; si on est pas en interaction
+    if (step)
+    [
+      ;;; l'agent détermine une direction aléatoire (0: Nord, 2: Sud, 1: Est, 3: Ouest)
+      let rdn random 4
+      set heading rdn * 90
+      ; l'agent enregistre sa nouvelle orientation a chaque mouvement
+      set dir (rdn + 1)
+      ; Y avance si elle n'est pas occupée
+      if not any? turtles-on patch-ahead 1
+      [fd 1]
+    ]
+  ]
+end
+
+; Interaction entre deux turtles (dure un lagTime)
+to interact-agents
+  ask turtles[
+    ; si une interaction est en cours  donc la turtle en face existe
+    ifelse (not step)
+    [
+      ; on récupère les infos de la turtle en face
+      update-infos turtle-inter
+      ; on désactive l'interaction pour bouger a la prochaine iteration et changer de binome
+      set step true
+      ; on  ajoute une interaction de faite
+      set numinc numinc + 1
+      ; on marque le patch comme pas en interaction
+      ask patch-here [set pcolor white]
+      ; on dit qu'on vient de finir une interaction pour l'update juste apres
+      set dir 0
+      ; on oublie le turtle avec lequel on a interagi
+      set turtle-inter nobody
+    ]
+    ; sinon, aucune interaction n'est en cours
+    [
+      ; on récupere l'agent en face (si il existe)
+      let turtle-ahead one-of turtles-on patch-ahead 1
+      ; et si cet agent nous regarde (qu'il est dans la direction opposée à la mienne
+      if (turtle-ahead != nobody and (([dir] of turtle-ahead mod 2) = (dir mod 2)) and ([dir] of turtle-ahead != dir))
+      [; on active l'interaction au niveau de l'agent
+       ;show (word "Ma dir " dir "  -  his dir " [dir] of turtle-ahead)
+        set step false
+        ; on enregistre l'agent avec lequel on interagit
+        set turtle-inter turtle-ahead
+        ; on marque le patch en interaction
+        ask patch-here [set pcolor orange]
+      ]
+      ; sinon on ne fait rien
+    ]
+  ]
+end
+
+; chaque agent actualise son effort courant
+to update-agents
+  ; on ne demande rien au null et high effort
+  ;ask turtles with [(classe = 0 or classe = 5)  and dir = 0] []
+  ; on s'occupe du shrinking effort
+  ask turtles with [classe = 1 and dir = 0] [set effort shrinking-effort]
+  ; on s'occupe du replicator
+  ask turtles with [classe = 2 and dir = 0] [set effort replicator-effort]
+  ; on s'occupe du rational
+  ask turtles with [classe = 3 and dir = 0] [set effort rational-effort]
+  ; on s'occupe du profit comparator
+  ask turtles with [classe = 4 and dir = 0] [set effort profit-comparator-effort]
+  ; on s'occupe du average rational
+  ask turtles with [classe = 6 and dir = 0] [set effort average-rational-effort]
+  ; on s'occupe du winner imitator
+  ask turtles with [classe = 7 and dir = 0] [set effort winner-imitator-effort]
+  ; on s'occupe de l'effort comparator
+  ask turtles with [classe = 8 and dir = 0] [set effort effort-comparator-effort]
+  ; on s'occupe de l'averager
+  ask turtles with [classe = 9 and dir = 0] [set effort averager-effort]
+  
+  ; on actualise toutes les couleurs d'effort
+  ask turtles [ set col color-effort ]
+end

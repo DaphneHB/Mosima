@@ -1,0 +1,176 @@
+;;;;;;;;;;;;;;;;;
+;; SETUPS
+;;;;;;;;;;;;;;;;;
+
+
+to setup-env
+  ; un maximum de 9 types implémentés
+  set max-types 9
+  ; Les dimensions de l'environnement ne doivent pas dépasser max-pxcor et max-pycor
+  ;ifelse X > max-pxcor or X <= 0 or Y <= 0 or Y > max-pycor
+  ifelse X <= 0 or Y <= 0
+  [ user-message "Dimensions incorrectes !" stop ]
+  [; on change la taille du monde
+    resize-world 0 X 0 Y 0 0]
+  ; on gère la résolution demandée
+  set-patch-size Resolution + 1
+  ; Il faut au moins un type d'agent dans l'environnement
+  if nbTypes <= 0 [ user-message "Au moins un type d'agent est requis !" stop ]
+  ;; Si l'utilisateur demande plus de 6 classes d'agents
+  if nbTypes > 6 [ user-message "Le programme ne propose que 6 classes d'agents."  stop ]
+  
+  ; on set le premier compte d'itération
+  set cpt-ticks LagTime
+  
+  ;; A l'origine tous les patches sont blancs quelle que soit la window
+  ask patches [
+    set pcolor white  ; (random 130) + 11
+  ]
+end
+
+to setup-interfaces
+  ; On set l'axe de average effort
+  set-current-plot "Average Effort"
+end
+
+to setup-agents
+  set nbAgents 0
+  let nbClasses nbTypes
+  ;;; les types sont choisis arbitrrairement noir puis rouge, vert,violet,jaune,bleu
+  ; agents blacks
+  if nbBlackAgents > 0 and nbClasses > 0
+  [
+    ; on créé le nb d'agents noirs demandés et de tel type
+    create-turtles nbBlackAgents [
+      ; on récupere la classe souhaitée par l'utilisateur
+      set classe classBlackAgents
+      set color black
+      ; on enregistre la couleur
+      set colt black
+    ]
+    set nbClasses nbClasses - 1
+    ; on incremente le nombre d'agents au total
+    set nbAgents nbAgents + nbBlackAgents
+  ]
+  if nbRedAgents > 0 and nbClasses > 0
+  [
+    ; on créé le nb d'agents rouges demandés et de tel type
+    create-turtles nbRedAgents [
+      ; on récupere la classe souhaitée par l'utilisateur
+      set classe classRedAgents
+      set color red
+      set colt red
+    ]
+    set nbClasses nbClasses - 1
+    ; on incremente le nombre d'agents au total
+    set nbAgents nbAgents + nbRedAgents
+  ]
+  if nbGreenAgents > 0 and nbClasses > 0
+  [
+    ; on créé le nb d'agents verts demandés et de tel type
+    create-turtles nbGreenAgents [
+      ; on récupere la classe souhaitée par l'utilisateur
+      set classe classGreenAgents
+      set color green
+      set colt green
+    ]
+    set nbClasses nbClasses - 1
+    ; on incremente le nombre d'agents au total
+    set nbAgents nbAgents + nbGreenAgents
+  ]
+  if nbPurpleAgents > 0 and nbClasses > 0
+  [
+    ; on créé le nb d'agents violets demandés et de tel type
+    create-turtles nbPurpleAgents [
+      ; on récupere la classe souhaitée par l'utilisateur
+      set classe classPurpleAgents
+      set color magenta
+      set colt magenta
+    ]
+    set nbClasses nbClasses - 1
+    ; on incremente le nombre d'agents au total
+    set nbAgents nbAgents + nbPurpleAgents
+  ]
+  if nbYellowAgents > 0 and nbClasses > 0
+  [
+    ; on créé le nb d'agents jaunes demandés et de tel type
+    create-turtles nbYellowAgents [
+      ; on récupere la classe souhaitée par l'utilisateur
+      set classe classYellowAgents
+      set color yellow
+      set colt yellow
+    ]
+    set nbClasses nbClasses - 1
+    ; on incremente le nombre d'agents au total
+    set nbAgents nbAgents + nbYellowAgents
+  ]
+  if nbBlueAgents > 0 and nbClasses > 0
+  [
+    ; on créé le nb d'agents bleus demandés et de tel type
+    create-turtles nbBlueAgents [
+      ; on récupere la classe souhaitée par l'utilisateur
+      set classe classBlueAgents
+      set color blue
+      set colt blue
+    ]
+    set nbClasses nbClasses - 1
+    ; on incremente le nombre d'agents au total
+    set nbAgents nbAgents + nbBlueAgents
+  ]
+  ; Si trop de types ont été demandés et qu'il n'y en a pas eu autant de créés
+  if (nbClasses > 0) [ user-message (word "Il manque " nbClasses " types d'agents !") stop ]
+  ; Si un des agents à une classe inexistante
+  if (any? turtles with [classe > max-types or classe < 0]) [ user-message "Certaines classes demandées n'existent pas encore ..." stop ]
+  ;;; On place toutes les turtles quelque soit leur couleur
+  ;; on récupere les patches libres
+  let libres-patches patches ;n-of nbAgents patches with [not any? turtles-here]
+                             ;;; S'il y a trop d'agents a placer
+  if (count libres-patches < nbAgents) [ user-message "Pas assez de place pour tous les agents !" stop ]
+  ; on place les turtles sur un patch
+  ask turtles [
+    let my-patch one-of libres-patches
+    move-to my-patch
+    ; on retire le patch utilisé de la liste des possibles
+    set libres-patches libres-patches with [self != my-patch]
+    ; on change l'orientation de la tortue à droite
+    set heading 0
+    set pitch 0
+    set roll 0
+    ;; on initialise les variables communes à tout les agents au setup
+    set dir 1
+    set numinc 0
+    set step true ; l'agent peut avancer, il n'est pas en interaction
+    set profit 0
+    set cumprof 0
+    set cumeffort 0
+    set lprofit 0
+    set aeffort 0 ; TODO danger
+    set aprofit 0 ; TODO danger
+    set neffort mean [effort] of turtles-on neighbors
+    set nprofit mean [profit] of turtles-on neighbors
+  ]
+end
+
+
+;Classes of agents :
+;   0 : Null effort
+;   1 : Shrinking effort
+;   2 : Replicator
+;   3 : Rational
+;   4 : Profil comparator
+;   5 : High effort
+;   6 : Average rational
+;   7 : Winner imitator
+;   8 : Effort comparator
+;   9 : Averager
+to setup-classes
+  ; on demande au null effort de placer leur effort a 0
+  ask turtles with [classe = 0] [set effort 0]
+  ; on demande au high effort et au winner imitator de placer leur effort a HigherEffort
+  ask turtles with [classe = 5 or classe = 7] [set effort HigherEffort]
+  ; et aux autres de choisir un effort aléatoire entre 0 et HigherEffort
+  ask turtles with [classe != 0 and classe != 5 and classe != 7] [set effort random-effort]
+  
+  ; on change la couleur des agents en fct de leur effort
+  ask turtles [set col color-effort]
+end
