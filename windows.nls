@@ -62,5 +62,5 @@ to go-window2
     ask turtles [ set pcolor col ]
   ]
   ; on affiche les interactions seulement si on voit les agents ? TODO a verifier
-  if Window1 [ ask turtles with [not step] [set pcolor orange]]
+  ;if Window1 [ ask turtles with [not step] [set pcolor orange]]
 end

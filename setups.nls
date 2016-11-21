@@ -34,6 +34,7 @@ to setup-interfaces
 end
 
 to setup-agents
+  set HigherEffort 2
   set nbAgents 0
   let nbClasses nbTypes
   ;;; les types sont choisis arbitrrairement noir puis rouge, vert,violet,jaune,bleu
@@ -146,8 +147,8 @@ to setup-agents
     set lprofit 0
     set aeffort 0 ; TODO danger
     set aprofit 0 ; TODO danger
-    set neffort mean [effort] of turtles-on neighbors
-    set nprofit mean [profit] of turtles-on neighbors
+    set neffort mean [effort] of turtles-on neighbors6
+    set nprofit mean [profit] of turtles-on neighbors6
   ]
 end
 

@@ -7,7 +7,7 @@ __includes [ "agents.nls" "functions.nls" "setups.nls" "windows.nls" ]
 ;;;;;;;;;;;;;;;
 ;; GLOBALS
 ;;;;;;;;;;;;;;;
-globals [env cpt-ticks nbAgents monitors-view? max-types]
+globals [env cpt-ticks nbAgents monitors-view? max-types HigherEffort]
 
 ;;;;;;;;;;;;;;;
 ;; TURTLES
@@ -93,8 +93,8 @@ end
 GRAPHICS-WINDOW
 0
 0
-571
-592
+245
+152
 -1
 -1
 11.0
@@ -108,9 +108,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-50
+10
 0
-50
+10
 0
 0
 1
@@ -125,7 +125,7 @@ INPUTBOX
 56
 95
 X
-50
+10
 1
 0
 Number
@@ -136,7 +136,7 @@ INPUTBOX
 112
 95
 Y
-50
+10
 1
 0
 Number
@@ -236,7 +236,7 @@ INPUTBOX
 181
 452
 nbBlackAgents
-100
+29
 1
 0
 Number
@@ -247,7 +247,7 @@ INPUTBOX
 182
 519
 nbRedAgents
-100
+1
 1
 0
 Number
@@ -280,7 +280,7 @@ INPUTBOX
 180
 720
 nbYellowAgents
-100
+0
 1
 0
 Number
@@ -291,7 +291,7 @@ INPUTBOX
 178
 788
 nbBlueAgents
-100
+0
 1
 0
 Number
@@ -302,7 +302,7 @@ INPUTBOX
 353
 453
 classBlackAgents
-5
+2
 1
 0
 Number
@@ -313,7 +313,7 @@ INPUTBOX
 354
 519
 classRedAgents
-0
+3
 1
 0
 Number
@@ -324,7 +324,7 @@ INPUTBOX
 355
 587
 classGreenAgents
-5
+0
 1
 0
 Number
@@ -335,7 +335,7 @@ INPUTBOX
 353
 654
 classPurpleAgents
-1
+4
 1
 0
 Number
@@ -363,10 +363,10 @@ classBlueAgents
 Number
 
 TEXTBOX
-348
-349
-524
-590
+351
+353
+553
+629
 Classes of agents :\n\n   0 : Null effort\n   1 : Shrinking effort\n   2 : Replicator\n   3 : Rational\n   4 : Profil comparator\n   5 : High effort\n   6 : Average rational\n   7 : Winner imitator\n   8 : Effort comparator\n   9 : Averager
 16
 0.0
@@ -475,7 +475,7 @@ ___________________________________
 TEXTBOX
 3
 303
-524
+545
 323
 _________________________________________________________________________________________________________________________________________________________
 12
@@ -490,7 +490,7 @@ CHOOSER
 ColorDisplayMode
 ColorDisplayMode
 "Red Scale" "Chromatic Scale"
-0
+1
 
 TEXTBOX
 200
@@ -543,9 +543,9 @@ TEXTBOX
 1
 
 TEXTBOX
-271
+273
 242
-286
+288
 261
 ■
 16
@@ -553,9 +553,9 @@ TEXTBOX
 1
 
 TEXTBOX
-295
+298
 242
-310
+313
 261
 ■
 16
@@ -563,9 +563,9 @@ TEXTBOX
 1
 
 TEXTBOX
-307
+310
 242
-322
+325
 261
 ■
 16
@@ -580,9 +580,9 @@ SLIDER
 AverageEffort
 AverageEffort
 0
-100
-25
-10
+2
+0.86
+0.1
 1
 NIL
 HORIZONTAL
@@ -608,9 +608,9 @@ TEXTBOX
 1
 
 TEXTBOX
-283
+286
 242
-298
+301
 261
 ■
 16
@@ -638,9 +638,9 @@ Low
 1
 
 TEXTBOX
-297
+298
 233
-324
+325
 251
 High
 10
@@ -681,14 +681,14 @@ LagTime
 LagTime
 1
 20
-1
+20
 1
 1
 NIL
 HORIZONTAL
 
 BUTTON
-103
+18
 233
 176
 266
@@ -705,9 +705,9 @@ NIL
 1
 
 BUTTON
-103
+19
 273
-175
+176
 306
 NIL
 go
@@ -745,14 +745,14 @@ OUTPUT
 338
 260
 440
-296
+311
 20
 
 PLOT
 452
 25
-666
-179
+669
+177
 Effort Window
 NIL
 NIL
@@ -765,17 +765,6 @@ false
 "" ""
 PENS
 "pen-0" 1.0 0 -2674135 false "" ""
-
-INPUTBOX
-10
-239
-83
-299
-HigherEffort
-50
-1
-0
-Number
 
 TEXTBOX
 337
@@ -798,10 +787,10 @@ Agent's effort plot window
 1
 
 TEXTBOX
-520
-319
-535
-795
+545
+317
+560
+793
 |\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|
 11
 0.0
@@ -826,8 +815,8 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [effort] of turtles"
 
 PLOT
-529
-345
+561
+326
 929
 537
 Average Efforts by type
@@ -853,10 +842,10 @@ PENS
 "Averager" 1.0 0 -10899396 true "" "ifelse (not any? turtles with [classe = 9])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 9]]"
 
 PLOT
-529
-561
-929
-758
+563
+551
+930
+763
 Average Profit by type
 time
 profit
@@ -1252,7 +1241,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 3D 5.3.1
+NetLogo 3D 5.3
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

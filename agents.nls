@@ -62,7 +62,7 @@ to interact-agents
         ; on enregistre l'agent avec lequel on interagit
         set turtle-inter turtle-ahead
         ; on marque le patch en interaction
-        ask patch-here [set pcolor orange]
+        ;ask patch-here [set pcolor orange]
       ]
       ; sinon on ne fait rien
     ]
