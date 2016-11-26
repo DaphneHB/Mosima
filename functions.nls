@@ -62,14 +62,31 @@ end
 ;; EFFORT
 ;;;;;;;;;;;;
 
+; valeur comprise entre 0.0001 et 2.001
+
+
 ; Retourne l'effort le plus adéquat à eff-j
 ; pour maximiser son profit
 ; selon la fonction de calcul du profit de i pi-i = 5*racine(ei+ej) -ei^2
 ; pour trouver la réponse maximale, on récupère la valeur pour laquelle dérivée(pi-i) = 0
 ; donc dérivée(pi-i) = 5/(2*racine(ei + ej)) - 2*x = 0
+to-report best-reply-effort-approx [eff-j]
+  ; implémentation de la forme parabolique (précise) de la valeur de leffort en fct de l'effort du dernier partenaire
+  ; effort = 1.16-0.301*aeffort+0.0512*aeffort^2
+  let new-effort 1.16 - (0.301 * eff-j) + (eff-j * eff-j * 0.0512)
+  if new-effort > HigherEffort [report 2.001]
+  if new-effort < LowerEffort [report 0.0001]
+  report new-effort
+end
+
 to-report best-reply-effort [eff-j]
-  if eff-j > 25 / 16 [ report 0 ]
-  report ((25 / 16) - eff-j) ^ (1 / 3)
+  ; implémentation de la forme exacte d'une des racines de la dérivée (pour a<2.19)
+  let eff-j-cube (eff-j * eff-j * eff-j)
+  let cube-root (-32 * eff-j-cube + 15 * sqrt 3 * sqrt (675 - 64 * eff-j-cube) + 675) ^ (1 / 3)
+  let new-effort 1 / 6 * (cube-root / (2 ^ (2 / 3)) + ((4 * (2 ^ (2 / 3)) * eff-j * eff-j) / cube-root)) - (eff-j / 3)
+  if new-effort > HigherEffort [report 2.001]
+  if new-effort < LowerEffort [report 0.0001]
+  report new-effort
 end
 
 ; Retourne le nombre couleur associé à l'effort actuel de l'agent, selon l'échelle choisie
@@ -150,7 +167,7 @@ end
 to-report profit-comparator-effort
   ; selon son propre profit et celui de son dernier partenaire
   ; augmente ou diminue son effort à fournir
-  ifelse (aprofit < profit)
+  ifelse (aprofit > profit)
   [report effort * 90 / 100] ; 90% de son effort courant
   [report effort * 110 / 100] ; 110% de son effort courant
 end

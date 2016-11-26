@@ -25,7 +25,9 @@ to move-agents
       ; l'agent enregistre sa nouvelle orientation a chaque mouvement
       set dir (rdn + 1)
       ; Y avance si elle n'est pas occupée
-      if not any? turtles-on patch-ahead 1
+      if (not any? turtles-on patch-ahead 1
+          and abs ([pxcor] of patch-ahead 1 - [pxcor] of self) <= 1
+          and abs ([pycor] of patch-ahead 1 - [pycor] of self) <= 1)
       [fd 1]
     ]
   ]

@@ -3,6 +3,8 @@
 ;;;;;;;;;;;;;;;;;
 
 
+
+
 to setup-env
   ; un maximum de 9 types implémentés
   set max-types 9
@@ -11,9 +13,7 @@ to setup-env
   ifelse X <= 0 or Y <= 0
   [ user-message "Dimensions incorrectes !" stop ]
   [; on change la taille du monde
-    resize-world 0 X 0 Y 0 0]
-  ; on gère la résolution demandée
-  set-patch-size Resolution + 1
+    resize-world 0 X - 1 0 Y - 1 0 0]
   ; Il faut au moins un type d'agent dans l'environnement
   if nbTypes <= 0 [ user-message "Au moins un type d'agent est requis !" stop ]
   ;; Si l'utilisateur demande plus de 6 classes d'agents
@@ -28,18 +28,15 @@ to setup-env
   ]
 end
 
-to setup-interfaces
-  ; On set l'axe de average effort
-  set-current-plot "Average Effort"
-end
 
 to setup-agents
-  set HigherEffort 2
+  set HigherEffort 2.001
+  set LowerEffort 0.0001
   set nbAgents 0
   let nbClasses nbTypes
   ;;; les types sont choisis arbitrrairement noir puis rouge, vert,violet,jaune,bleu
   ; agents blacks
-  if nbBlackAgents > 0 and nbClasses > 0
+  if nbBlackAgents >= 0 and nbClasses > 0
   [
     ; on créé le nb d'agents noirs demandés et de tel type
     create-turtles nbBlackAgents [
@@ -53,7 +50,7 @@ to setup-agents
     ; on incremente le nombre d'agents au total
     set nbAgents nbAgents + nbBlackAgents
   ]
-  if nbRedAgents > 0 and nbClasses > 0
+  if nbRedAgents >= 0 and nbClasses > 0
   [
     ; on créé le nb d'agents rouges demandés et de tel type
     create-turtles nbRedAgents [
@@ -66,7 +63,7 @@ to setup-agents
     ; on incremente le nombre d'agents au total
     set nbAgents nbAgents + nbRedAgents
   ]
-  if nbGreenAgents > 0 and nbClasses > 0
+  if nbGreenAgents >= 0 and nbClasses > 0
   [
     ; on créé le nb d'agents verts demandés et de tel type
     create-turtles nbGreenAgents [
@@ -79,7 +76,7 @@ to setup-agents
     ; on incremente le nombre d'agents au total
     set nbAgents nbAgents + nbGreenAgents
   ]
-  if nbPurpleAgents > 0 and nbClasses > 0
+  if nbPurpleAgents >= 0 and nbClasses > 0
   [
     ; on créé le nb d'agents violets demandés et de tel type
     create-turtles nbPurpleAgents [
@@ -92,7 +89,7 @@ to setup-agents
     ; on incremente le nombre d'agents au total
     set nbAgents nbAgents + nbPurpleAgents
   ]
-  if nbYellowAgents > 0 and nbClasses > 0
+  if nbYellowAgents >= 0 and nbClasses > 0
   [
     ; on créé le nb d'agents jaunes demandés et de tel type
     create-turtles nbYellowAgents [
@@ -105,7 +102,7 @@ to setup-agents
     ; on incremente le nombre d'agents au total
     set nbAgents nbAgents + nbYellowAgents
   ]
-  if nbBlueAgents > 0 and nbClasses > 0
+  if nbBlueAgents >= 0 and nbClasses > 0
   [
     ; on créé le nb d'agents bleus demandés et de tel type
     create-turtles nbBlueAgents [
@@ -153,6 +150,8 @@ to setup-agents
 end
 
 
+
+
 ;Classes of agents :
 ;   0 : Null effort
 ;   1 : Shrinking effort
@@ -175,3 +174,4 @@ to setup-classes
   ; on change la couleur des agents en fct de leur effort
   ask turtles [set col color-effort]
 end
+

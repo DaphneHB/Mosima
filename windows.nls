@@ -2,22 +2,26 @@
 ;; WINDOWS
 ;;;;;;;;;;;;;;;;;
 
+
 ; Le plot dans l'interface s'actualise tout le temps
+
 
 ; La window 1 correspond à la vue des agents (triangles)
 ; La window 2 correspond à la vue des efforts des agents (couleurs des patches)
 
+
 to go-interfaces
-  go-plot-effort
+  ;go-plot-effort
   ;go-monitors
   go-window1
   go-window2
   ; On met à jour la valeur moyenne d'effort
   clear-output
-  let avereff precision (mean [effort] of turtles) 2 ; Arrondi à la deuxieme décimale pres
+  let avereff precision (mean [effort] of turtles) 5 ; Arrondi à la deuxieme décimale pres
   output-print avereff
   set AverageEffort avereff
 end
+
 
 ; visualissation des effort par le plot
 to go-plot-effort
@@ -38,12 +42,24 @@ to go-plot-effort
   ]
 end
 
+to go6.9
+  set-current-plot "Figure 6"
+  clear-plot
+  set-plot-pen-mode 2
+  setup-plots
+  set-plot-pen-color black
+  update-plots
+  plotxy nbBlackAgents (mean [effort] of turtles)
+end
+
+
 ; Visualisation par moniteur
 to go-monitors
   ifelse monitors-view?
   [inspect one-of turtles]
   [ask turtles [ stop-inspecting self ] ]
 end
+
 
 ; Aperçu des agents dans la fenetre principale
 to go-window1
@@ -53,6 +69,7 @@ to go-window1
     [hide-turtle]
   ]
 end
+
 
 ; Aperçu des efforts des agents dans la fenetre principale (sur les patches)
 to go-window2
@@ -64,3 +81,6 @@ to go-window2
   ; on affiche les interactions seulement si on voit les agents ? TODO a verifier
   ;if Window1 [ ask turtles with [not step] [set pcolor orange]]
 end
+
+
+
