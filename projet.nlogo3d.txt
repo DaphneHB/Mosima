@@ -167,7 +167,7 @@ INPUTBOX
 342
 383
 nbTypes
-1
+2
 1
 0
 Number
@@ -211,7 +211,7 @@ SWITCH
 189
 Noise
 Noise
-0
+1
 1
 -1000
 
@@ -221,7 +221,7 @@ INPUTBOX
 181
 452
 nbBlackAgents
-2500
+2350
 1
 0
 Number
@@ -232,16 +232,16 @@ INPUTBOX
 182
 519
 nbRedAgents
-0
+150
 1
 0
 Number
 
 INPUTBOX
 61
-527
+526
 182
-587
+586
 nbGreenAgents
 0
 1
@@ -249,10 +249,10 @@ nbGreenAgents
 Number
 
 INPUTBOX
-58
-594
-181
-654
+61
+595
+184
+655
 nbPurpleAgents
 0
 1
@@ -260,10 +260,10 @@ nbPurpleAgents
 Number
 
 INPUTBOX
-57
-660
-180
-720
+62
+662
+185
+722
 nbYellowAgents
 0
 1
@@ -271,10 +271,10 @@ nbYellowAgents
 Number
 
 INPUTBOX
-53
-728
-178
-788
+59
+729
+184
+789
 nbBlueAgents
 0
 1
@@ -287,7 +287,7 @@ INPUTBOX
 353
 453
 classBlackAgents
-7
+1
 1
 0
 Number
@@ -298,7 +298,7 @@ INPUTBOX
 354
 519
 classRedAgents
-6
+5
 1
 0
 Number
@@ -536,7 +536,7 @@ AverageEffort
 AverageEffort
 0
 2
-0
+0.21492
 0.1
 1
 NIL
@@ -621,7 +621,7 @@ PercentageNoise
 PercentageNoise
 0
 50
-80
+50
 1
 1
 NIL
@@ -724,10 +724,10 @@ TEXTBOX
 1
 
 PLOT
-454
-184
-668
-304
+447
+185
+676
+318
 Average Effort
 time
 effort
@@ -800,8 +800,8 @@ PLOT
 28
 668
 178
-Profit according to Effort
-effort
+Average Profit
+time
 profit
 0.0
 10.0
@@ -809,9 +809,9 @@ profit
 10.0
 true
 false
-"set-plot-x-range 0 HigherEffort\nset-plot-y-range (-1 * HigherEffort * HigherEffort + HigherEffort) (HigherEffort * HigherEffort - HigherEffort)" ""
+"set-plot-y-range 0 10" ""
 PENS
-"default" 1.0 0 -16777216 true "" "histogram [profit] of turtles"
+"default" 1.0 0 -16777216 true "" "plot mean [profit] of turtles"
 
 PLOT
 681
@@ -1233,7 +1233,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 3D 5.3
+NetLogo 3D 5.3.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@

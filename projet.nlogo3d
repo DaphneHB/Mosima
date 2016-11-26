@@ -7,7 +7,7 @@ __includes [ "agents.nls" "functions.nls" "setups.nls" "windows.nls" ]
 ;;;;;;;;;;;;;;;
 ;; GLOBALS
 ;;;;;;;;;;;;;;;
-globals [env cpt-ticks nbAgents monitors-view? max-types HigherEffort]
+globals [env cpt-ticks nbAgents monitors-view? max-types HigherEffort LowerEffort]
 
 ;;;;;;;;;;;;;;;
 ;; TURTLES
@@ -55,7 +55,7 @@ turtles-own [classe
 ;;;;;;;;;;;;;;;
 
 to setup
-  clear-all
+  ;clear-all
   clear-turtles
   clear-patches
   ; to set up the env
@@ -93,8 +93,8 @@ end
 GRAPHICS-WINDOW
 0
 0
-245
-152
+560
+581
 -1
 -1
 11.0
@@ -108,9 +108,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-10
+49
 0
-10
+49
 0
 0
 1
@@ -125,7 +125,7 @@ INPUTBOX
 56
 95
 X
-10
+50
 1
 0
 Number
@@ -136,7 +136,7 @@ INPUTBOX
 112
 95
 Y
-10
+50
 1
 0
 Number
@@ -189,7 +189,7 @@ SWITCH
 67
 Window1
 Window1
-0
+1
 1
 -1000
 
@@ -203,21 +203,6 @@ Window2
 0
 1
 -1000
-
-SLIDER
-201
-100
-334
-133
-Resolution
-Resolution
-0
-20
-10
-5
-1
-NIL
-HORIZONTAL
 
 SWITCH
 11
@@ -236,7 +221,7 @@ INPUTBOX
 181
 452
 nbBlackAgents
-29
+2350
 1
 0
 Number
@@ -247,7 +232,7 @@ INPUTBOX
 182
 519
 nbRedAgents
-1
+150
 1
 0
 Number
@@ -258,7 +243,7 @@ INPUTBOX
 182
 587
 nbGreenAgents
-100
+0
 1
 0
 Number
@@ -269,7 +254,7 @@ INPUTBOX
 181
 654
 nbPurpleAgents
-100
+0
 1
 0
 Number
@@ -302,7 +287,7 @@ INPUTBOX
 353
 453
 classBlackAgents
-2
+1
 1
 0
 Number
@@ -313,7 +298,7 @@ INPUTBOX
 354
 519
 classRedAgents
-3
+5
 1
 0
 Number
@@ -324,7 +309,7 @@ INPUTBOX
 355
 587
 classGreenAgents
-0
+4
 1
 0
 Number
@@ -346,7 +331,7 @@ INPUTBOX
 352
 720
 classYellowAgents
-3
+4
 1
 0
 Number
@@ -357,7 +342,7 @@ INPUTBOX
 349
 789
 classBlueAgents
-8
+0
 1
 0
 Number
@@ -367,28 +352,8 @@ TEXTBOX
 353
 553
 629
-Classes of agents :\n\n   0 : Null effort\n   1 : Shrinking effort\n   2 : Replicator\n   3 : Rational\n   4 : Profil comparator\n   5 : High effort\n   6 : Average rational\n   7 : Winner imitator\n   8 : Effort comparator\n   9 : Averager
+Classes of agents :\n\n   0 : Null effort\n   1 : Shrinking effort\n   2 : Replicator\n   3 : Rational\n   4 : Profit comparator\n   5 : High effort\n   6 : Average rational\n   7 : Winner imitator\n   8 : Effort comparator\n   9 : Averager
 16
-0.0
-1
-
-TEXTBOX
-201
-81
-231
-99
-Low
-10
-0.0
-1
-
-TEXTBOX
-312
-79
-341
-97
-High
-10
 0.0
 1
 
@@ -458,16 +423,6 @@ TEXTBOX
 216
 370
 # Types
-12
-0.0
-1
-
-TEXTBOX
-199
-62
-477
-80
-___________________________________
 12
 0.0
 1
@@ -581,7 +536,7 @@ AverageEffort
 AverageEffort
 0
 2
-0.86
+0.20779
 0.1
 1
 NIL
@@ -664,7 +619,7 @@ SLIDER
 227
 PercentageNoise
 PercentageNoise
-1
+0
 50
 50
 1
@@ -681,7 +636,7 @@ LagTime
 LagTime
 1
 20
-20
+1
 1
 1
 NIL
@@ -744,27 +699,9 @@ TEXTBOX
 OUTPUT
 338
 260
-440
+496
 311
 20
-
-PLOT
-452
-25
-669
-177
-Effort Window
-NIL
-NIL
-0.0
-10.0
-0.0
-10.0
-false
-false
-"" ""
-PENS
-"pen-0" 1.0 0 -2674135 false "" ""
 
 TEXTBOX
 337
@@ -772,16 +709,6 @@ TEXTBOX
 426
 258
 Average Effort\n(computed value)
-11
-0.0
-1
-
-TEXTBOX
-456
-10
-654
-38
-Agent's effort plot window
 11
 0.0
 1
@@ -797,10 +724,10 @@ TEXTBOX
 1
 
 PLOT
-454
-184
-668
-304
+447
+185
+676
+318
 Average Effort
 time
 effort
@@ -823,18 +750,18 @@ Average Efforts by type
 time
 effort
 0.0
-10.0
 0.0
-10.0
+0.0
+0.0
 true
 true
-"set-plot-y-range 0 HigherEffort" ""
+"" ""
 PENS
 "Null Effort" 1.0 0 -13345367 true "" "ifelse (not any? turtles with [classe = 0])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 0]]"
 "Shrinking Effort" 1.0 0 -13791810 true "" "ifelse (not any? turtles with [classe = 1])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 1]]"
 "Replicator" 1.0 0 -2064490 true "" "ifelse (not any? turtles with [classe = 2])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 2]]"
 "Rational" 1.0 0 -5825686 true "" "ifelse (not any? turtles with [classe = 3])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 3]]"
-"Profil Comparator" 1.0 0 -6459832 true "" "ifelse (not any? turtles with [classe = 4])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 4]]"
+"Profit Comparator" 1.0 0 -6459832 true "" "ifelse (not any? turtles with [classe = 4])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 4]]"
 "High effort" 1.0 0 -2674135 true "" "ifelse (not any? turtles with [classe = 5])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 5]]"
 "Average Rational" 1.0 0 -14835848 true "" "ifelse (not any? turtles with [classe = 6])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 6]]"
 "Winner Imitator" 1.0 0 -955883 true "" "ifelse (not any? turtles with [classe = 7])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 7]]"
@@ -861,7 +788,7 @@ PENS
 "Shrinking Effort" 1.0 0 -13791810 true "" "ifelse (not any? turtles with [classe = 1])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 1]]"
 "Replicator" 1.0 0 -2064490 true "" "ifelse (not any? turtles with [classe = 2])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 2]]"
 "Rational" 1.0 0 -5825686 true "" "ifelse (not any? turtles with [classe = 3])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 3]]"
-"Profil Comparator" 1.0 0 -6459832 true "" "ifelse (not any? turtles with [classe = 4])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 4]]"
+"Profit Comparator" 1.0 0 -6459832 true "" "ifelse (not any? turtles with [classe = 4])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 4]]"
 "High Effort" 1.0 0 -2674135 true "" "ifelse (not any? turtles with [classe = 5])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 5]]"
 "Average Rational" 1.0 0 -14835848 true "" "ifelse (not any? turtles with [classe = 6])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 6]]"
 "Winner Imitator" 1.0 0 -955883 true "" "ifelse (not any? turtles with [classe = 7])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 7]]"
@@ -869,10 +796,10 @@ PENS
 "Averager" 1.0 0 -10899396 true "" "ifelse (not any? turtles with [classe = 9])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 9]]"
 
 PLOT
-680
-27
-920
-177
+453
+28
+668
+178
 Profit according to Effort
 effort
 profit
@@ -885,6 +812,71 @@ false
 "set-plot-x-range 0 HigherEffort\nset-plot-y-range (-1 * HigherEffort * HigherEffort + HigherEffort) (HigherEffort * HigherEffort - HigherEffort)" ""
 PENS
 "default" 1.0 0 -16777216 true "" "histogram [profit] of turtles"
+
+PLOT
+681
+85
+1052
+305
+Figure 6
+NIL
+NIL
+0.0
+1000.0
+0.0
+2.5
+true
+true
+"" ""
+PENS
+"Null Effort" 1.0 0 -14070903 true "" ""
+"Shrinking Effort" 1.0 0 -12345184 true "" ""
+"Replicator" 1.0 0 -2064490 true "" ""
+"Profit comparator" 1.0 0 -6459832 true "" ""
+"Winner imitator" 1.0 0 -955883 true "" ""
+"Effort comparator" 1.0 0 -4079321 true "" ""
+"Averager" 1.0 0 -10899396 true "" ""
+
+PLOT
+1062
+84
+1471
+307
+Figure 7
+NIL
+NIL
+0.0
+1000.0
+0.0
+2.5
+true
+true
+";set-current-plot-pen \"Expected\"\n;plot-pen-down\n;plotxy 0 0.92101\n;plotxy 6 0.92701\n;plotxy 56 0.98101\n;plotxy 333 1.28100\n;plotxy 667 1.64100\n;plotxy 1000 2.00100\n;plot-pen-up" ""
+PENS
+"Rational" 1.0 0 -13791810 true "" ""
+"Average Rational" 1.0 0 -5825686 true "" ""
+"Expected" 1.0 0 -16777216 true "" ""
+
+PLOT
+962
+327
+1322
+533
+Figure 9
+NIL
+NIL
+0.0
+200.0
+0.0
+2.5
+true
+true
+"" ""
+PENS
+"Sans bruit" 1.0 0 -14730904 true "" "if PercentageNoise = 0 [plotxy ticks (mean [effort] of turtles) plot-pen-down]"
+"Bruit : niveau faible" 1.0 0 -7858858 true "" "if PercentageNoise = 10 [plotxy ticks (mean [effort] of turtles) plot-pen-down]"
+"Bruit : niveau moyen" 1.0 0 -4079321 true "" "if PercentageNoise = 20 [plotxy ticks (mean [effort] of turtles) plot-pen-down]"
+"Bruit : niveau élevé" 1.0 0 -11221820 true "" "if PercentageNoise = 80 [plotxy ticks (mean [effort] of turtles) plot-pen-down]"
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -1241,10 +1233,294 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 3D 5.3
+NetLogo 3D 5.3.1
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="Figure6" repetitions="1" runMetricsEveryStep="false">
+    <setup>set nbRedAgents (1000 - nbBlackAgents)
+setup
+set-current-plot "Average Effort"
+clear-plot
+set-current-plot "Average Efforts by type"
+clear-plot
+set-current-plot "Average Profit by type"
+clear-plot
+set-current-plot "Profit according to Effort"
+clear-plot</setup>
+    <go>go</go>
+    <final>set-current-plot "Figure 6"
+if (nbBlackAgents = 0)
+[plot-pen-up]
+if (classRedAgents = 0) [set-current-plot-pen "Null Effort" set-plot-pen-color blue]
+if (classRedAgents = 1) [set-current-plot-pen "Shrinking Effort" set-plot-pen-color cyan - 1]
+if (classRedAgents = 2) [set-current-plot-pen "Replicator" set-plot-pen-color pink]
+if (classRedAgents = 4) [set-current-plot-pen "Profit comparator" set-plot-pen-color brown]
+if (classRedAgents = 7) [set-current-plot-pen "Winner imitator" set-plot-pen-color orange]
+if (classRedAgents = 8) [set-current-plot-pen "Effort comparator" set-plot-pen-color yellow - 1]
+if (classRedAgents = 9) [set-current-plot-pen "Averager" set-plot-pen-color green]
+plotxy nbBlackAgents (mean [effort] of turtles)
+plot-pen-down</final>
+    <timeLimit steps="1000"/>
+    <metric>mean [effort] of turtles</metric>
+    <enumeratedValueSet variable="nbTypes">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classBlackAgents">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classRedAgents">
+      <value value="0"/>
+      <value value="1"/>
+      <value value="2"/>
+      <value value="4"/>
+      <value value="7"/>
+      <value value="8"/>
+      <value value="9"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbRedAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbBlackAgents">
+      <value value="0"/>
+      <value value="6"/>
+      <value value="56"/>
+      <value value="333"/>
+      <value value="667"/>
+      <value value="1000"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Noise">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="X">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Y">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classGreenAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classBlueAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbYellowAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ColorDisplayMode">
+      <value value="&quot;Chromatic Scale&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Window1">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="LagTime">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classPurpleAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Window2">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="AverageEffort">
+      <value value="1.60973"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbGreenAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="PercentageNoise">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbBlueAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classYellowAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbPurpleAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Figure7" repetitions="1" runMetricsEveryStep="false">
+    <setup>set nbRedAgents (1000 - nbBlackAgents)
+setup
+set-current-plot "Average Effort"
+clear-plot
+set-current-plot "Average Efforts by type"
+clear-plot
+set-current-plot "Average Profit by type"
+clear-plot
+set-current-plot "Profit according to Effort"
+clear-plot</setup>
+    <go>go</go>
+    <final>set-current-plot "Figure 7"
+if (nbBlackAgents = 0)
+[plot-pen-up]
+if (classRedAgents = 3) [set-current-plot-pen "Rational" set-plot-pen-color blue]
+if (classRedAgents = 6) [set-current-plot-pen "Average Rational" set-plot-pen-color magenta]
+plotxy nbBlackAgents (mean [effort] of turtles)
+plot-pen-down</final>
+    <timeLimit steps="1000"/>
+    <metric>mean [effort] of turtles</metric>
+    <enumeratedValueSet variable="nbTypes">
+      <value value="2"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classBlackAgents">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classRedAgents">
+      <value value="3"/>
+      <value value="6"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbRedAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbBlackAgents">
+      <value value="0"/>
+      <value value="6"/>
+      <value value="56"/>
+      <value value="333"/>
+      <value value="667"/>
+      <value value="1000"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Noise">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="X">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Y">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classGreenAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classBlueAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbYellowAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ColorDisplayMode">
+      <value value="&quot;Chromatic Scale&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Window1">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="LagTime">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classPurpleAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Window2">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="AverageEffort">
+      <value value="1.60973"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbGreenAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="PercentageNoise">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbBlueAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classYellowAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbPurpleAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Figure9" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup
+set-current-plot "Average Effort"
+clear-plot
+set-current-plot "Average Efforts by type"
+clear-plot
+set-current-plot "Average Profit by type"
+clear-plot
+set-current-plot "Profit according to Effort"
+clear-plot</setup>
+    <go>go</go>
+    <final>plot-pen-up</final>
+    <timeLimit steps="200"/>
+    <metric>mean [effort] of turtles</metric>
+    <enumeratedValueSet variable="nbTypes">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbRedAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classBlackAgents">
+      <value value="7"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="PercentageNoise">
+      <value value="0"/>
+      <value value="10"/>
+      <value value="20"/>
+      <value value="80"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classGreenAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Window1">
+      <value value="false"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbPurpleAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Noise">
+      <value value="true"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classBlueAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="AverageEffort">
+      <value value="0.50356"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbBlueAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbYellowAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="ColorDisplayMode">
+      <value value="&quot;Chromatic Scale&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbBlackAgents">
+      <value value="2500"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classYellowAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classPurpleAgents">
+      <value value="4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Y">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="X">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="classRedAgents">
+      <value value="6"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="nbGreenAgents">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="LagTime">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="Window2">
+      <value value="true"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
