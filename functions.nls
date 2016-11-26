@@ -21,6 +21,20 @@ to update-infos [other-turtle]
   set nprofit mean [profit] of turtles-on neighbors6
 end
 
+; Calcul de la note (sur note-sur) à donner au précédent partenaire
+; calculé en fct du profit (profit-obtenu)
+to-report note-a-donner [profit-obtenu]
+  ; on calcule le profit moyen que j'ai eu jusque là
+  let profit-moy (cumprof / numinc) + LowerEffort ; on ajoute un leger offset pour eviter les divisions par zero
+  ; on récupère l'écart à la moyenne du profit tout juste obtenu (ecart entre 1 et -1)
+  ; l'ecart tend vers -1 si le nouveau profit est moins bon qu'habituellement sinon vers 1
+  let ecart (profit-obtenu - profit-moy) / profit-moy
+  ; on doit donc les mettre dans l'intervalle 0 à note-sur
+  let notation (ecart + 1) * note-sur / 2
+  ;print (word "Profit obtenu " profit-obtenu " profit moyen " profit-moy " ecart " ecart " note = " notation)
+  report notation
+end
+
 ;;;;;;;;;;;;
 ;; NOISE
 ;;;;;;;;;;;;
@@ -54,7 +68,7 @@ to-report profit-compute [ei ej]
   ; pi_i = 5*sqrt(ei + ej) - ei**2
   let racine sqrt (ei + ej)
   let carre ei * ei
-  let res 5 * racine - carre
+  let res (5 * racine) - carre
   report res
 end
 

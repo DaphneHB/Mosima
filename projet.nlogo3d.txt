@@ -7,18 +7,11 @@ __includes [ "agents.nls" "functions.nls" "setups.nls" "windows.nls" ]
 ;;;;;;;;;;;;;;;
 ;; GLOBALS
 ;;;;;;;;;;;;;;;
-globals [env cpt-ticks nbAgents monitors-view? max-types HigherEffort LowerEffort]
+globals [env cpt-ticks nbAgents monitors-view? max-types HigherEffort LowerEffort note-sur]
 
 ;;;;;;;;;;;;;;;
 ;; TURTLES
 ;;;;;;;;;;;;;;;
-; TODO useless
-breed [black_ags black_ag]
-breed [red_ags red_ag]
-breed [green_ags green_ag]
-breed [purple_ags purple_ag]
-breed [yellow_ags yellow_ag]
-breed [blue_ags blue_ag]
 
 ;; toutes les couleurs d'agents ont les memes attributs (une classe, un profit, un effort)
 ; classe : type de l'agent (int - cf interface) - la variable type n'est pas disponible sur netlogo
@@ -40,6 +33,7 @@ breed [blue_ags blue_ag]
 ; neffort : effort moyen dans mon voisinage
 ; nprofit : profit moyen dans mon voisinage
 ; turtle-inter : l'agent avec lequel je suis en interaction
+; cumnotes : notes cumulées que les autres agents ont donné à cet agent
 turtles-own [classe
   colt col numinc evol dir step
   effort profit
@@ -48,6 +42,7 @@ turtles-own [classe
   aeffort aprofit
   neffort nprofit
   turtle-inter
+  cumnotes
   ]
 
 ;;;;;;;;;;;;;;;
@@ -55,7 +50,7 @@ turtles-own [classe
 ;;;;;;;;;;;;;;;
 
 to setup
-  ;clear-all
+  clear-all
   clear-turtles
   clear-patches
   ; to set up the env
@@ -88,6 +83,17 @@ to go
   tick
   ; sinon faire pause à la simulation
   ; wait nb_sec
+end
+
+;;;;;;;;;;;;;;;;;;;
+;; ANALYSE GLOBALE
+;;;;;;;;;;;;;;;;;;;
+
+to analyse-interactions
+  ; pour calculer le nombre d'interactions au sein d'une catégorie
+  let interact-in-cat 0
+
+  ; pour calculer le nombre d'interaction tout au long
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -162,12 +168,12 @@ Agent parameters :
 1
 
 INPUTBOX
-225
-323
-342
-383
+220
+328
+337
+388
 nbTypes
-2
+3
 1
 0
 Number
@@ -216,43 +222,43 @@ Noise
 -1000
 
 INPUTBOX
-64
-392
-181
-452
+71
+395
+188
+455
 nbBlackAgents
-2350
+250
 1
 0
 Number
 
 INPUTBOX
-62
-459
-182
-519
+69
+462
+189
+522
 nbRedAgents
-150
+1700
 1
 0
 Number
 
 INPUTBOX
-61
-526
-182
-586
+68
+529
+189
+589
 nbGreenAgents
-0
+500
 1
 0
 Number
 
 INPUTBOX
-61
-595
-184
-655
+68
+598
+191
+658
 nbPurpleAgents
 0
 1
@@ -260,10 +266,10 @@ nbPurpleAgents
 Number
 
 INPUTBOX
-62
-662
-185
-722
+69
+665
+192
+725
 nbYellowAgents
 0
 1
@@ -271,10 +277,10 @@ nbYellowAgents
 Number
 
 INPUTBOX
-59
-729
-184
-789
+66
+732
+191
+792
 nbBlueAgents
 0
 1
@@ -282,43 +288,43 @@ nbBlueAgents
 Number
 
 INPUTBOX
-192
-393
-353
-453
+199
+396
+360
+456
 classBlackAgents
-1
-1
-0
-Number
-
-INPUTBOX
-193
-459
-354
-519
-classRedAgents
 5
 1
 0
 Number
 
 INPUTBOX
-194
-527
-355
-587
-classGreenAgents
-4
+200
+462
+361
+522
+classRedAgents
+9
 1
 0
 Number
 
 INPUTBOX
-190
-594
-353
-654
+201
+530
+362
+590
+classGreenAgents
+0
+1
+0
+Number
+
+INPUTBOX
+197
+597
+360
+657
 classPurpleAgents
 4
 1
@@ -326,10 +332,10 @@ classPurpleAgents
 Number
 
 INPUTBOX
-190
-660
-352
-720
+197
+663
+359
+723
 classYellowAgents
 4
 1
@@ -337,10 +343,10 @@ classYellowAgents
 Number
 
 INPUTBOX
-188
-729
-349
-789
+195
+732
+356
+792
 classBlueAgents
 0
 1
@@ -348,10 +354,10 @@ classBlueAgents
 Number
 
 TEXTBOX
-351
-353
-553
-629
+358
+356
+560
+586
 Classes of agents :\n\n   0 : Null effort\n   1 : Shrinking effort\n   2 : Replicator\n   3 : Rational\n   4 : Profit comparator\n   5 : High effort\n   6 : Average rational\n   7 : Winner imitator\n   8 : Effort comparator\n   9 : Averager
 16
 0.0
@@ -428,175 +434,175 @@ TEXTBOX
 1
 
 TEXTBOX
-3
-303
-545
-323
+2
+308
+544
+328
 _________________________________________________________________________________________________________________________________________________________
 12
 0.0
 1
 
 CHOOSER
-199
-163
-333
-208
+255
+83
+389
+128
 ColorDisplayMode
 ColorDisplayMode
 "Red Scale" "Chromatic Scale"
 1
 
 TEXTBOX
-200
-136
-488
-154
+202
+60
+490
+78
 ___________________________________
 12
 0.0
 1
 
 TEXTBOX
-201
-212
-454
-230
+203
+124
+456
+142
 ___________________________________
 12
 0.0
 1
 
 TEXTBOX
-201
-242
-216
-260
+193
+150
+208
+168
 ■
 16
 104.0
 1
 
 TEXTBOX
-237
-242
-252
-261
+228
+150
+243
+169
 ■
 16
 85.0
 1
 
 TEXTBOX
-249
-242
-264
-261
+240
+150
+255
+169
 ■
 16
 65.0
 1
 
 TEXTBOX
-273
-242
-288
-261
+264
+150
+279
+169
 ■
 16
 45.0
 1
 
 TEXTBOX
-298
-242
-313
-261
+289
+150
+304
+169
 ■
 16
 25.0
 1
 
 TEXTBOX
-310
-242
-325
-261
+301
+150
+316
+169
 ■
 16
 15.0
 1
 
 SLIDER
-199
-260
-325
-293
+190
+168
+316
+201
 AverageEffort
 AverageEffort
 0
 2
-0.21492
+1.24976
 0.1
 1
 NIL
 HORIZONTAL
 
 TEXTBOX
-213
-242
-228
-261
+204
+150
+219
+169
 ■
 16
 94.0
 1
 
 TEXTBOX
-225
-242
-240
-261
+216
+150
+231
+169
 ■
 16
 84.0
 1
 
 TEXTBOX
-286
-242
-301
-261
+277
+150
+292
+169
 ■
 16
 27.0
 1
 
 TEXTBOX
-261
-242
-276
-261
+252
+150
+267
+168
 ■
 16
 67.0
 1
 
 TEXTBOX
-202
-233
-232
-251
+193
+141
+223
+159
 Low
 10
 0.0
 1
 
 TEXTBOX
-298
-233
-325
-251
+289
+141
+316
+159
 High
 10
 0.0
@@ -615,7 +621,7 @@ Simulation parameters :
 SLIDER
 10
 194
-182
+181
 227
 PercentageNoise
 PercentageNoise
@@ -624,7 +630,7 @@ PercentageNoise
 50
 1
 1
-NIL
+%
 HORIZONTAL
 
 SLIDER
@@ -639,7 +645,7 @@ LagTime
 1
 1
 1
-NIL
+ticks
 HORIZONTAL
 
 BUTTON
@@ -677,9 +683,9 @@ NIL
 1
 
 TEXTBOX
-189
+185
 10
-204
+200
 299
 |\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|\n|
 14
@@ -697,17 +703,17 @@ TEXTBOX
 1
 
 OUTPUT
-338
-260
-496
-311
+319
+170
+445
+221
 20
 
 TEXTBOX
-337
-230
-426
-258
+327
+142
+445
+170
 Average Effort\n(computed value)
 11
 0.0
@@ -724,10 +730,10 @@ TEXTBOX
 1
 
 PLOT
-447
-185
-676
-318
+455
+156
+671
+281
 Average Effort
 time
 effort
@@ -742,10 +748,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [effort] of turtles"
 
 PLOT
-561
-326
-929
-537
+559
+294
+927
+498
 Average Efforts by type
 time
 effort
@@ -769,10 +775,10 @@ PENS
 "Averager" 1.0 0 -10899396 true "" "ifelse (not any? turtles with [classe = 9])\n[plot-pen-up]\n[plot mean [effort] of turtles with [classe = 9]]"
 
 PLOT
-563
-551
-930
-763
+558
+499
+925
+706
 Average Profit by type
 time
 profit
@@ -782,7 +788,7 @@ profit
 10.0
 true
 true
-"set-plot-y-range (-1 * HigherEffort * HigherEffort + HigherEffort) (HigherEffort * HigherEffort - HigherEffort)" ""
+"set-plot-y-range 0 (HigherEffort * HigherEffort - HigherEffort)" ""
 PENS
 "Null Effort" 1.0 0 -13345367 true "" "ifelse (not any? turtles with [classe = 0])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 0]]"
 "Shrinking Effort" 1.0 0 -13791810 true "" "ifelse (not any? turtles with [classe = 1])\n[plot-pen-up]\n[plot mean [profit] of turtles with [classe = 1]]"
@@ -797,9 +803,9 @@ PENS
 
 PLOT
 453
-28
+10
 668
-178
+149
 Average Profit
 time
 profit
@@ -809,15 +815,15 @@ profit
 10.0
 true
 false
-"set-plot-y-range 0 10" ""
+"set-plot-y-range 0 (HigherEffort * HigherEffort - HigherEffort)" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot mean [profit] of turtles"
 
 PLOT
-681
-85
-1052
-305
+1161
+31
+1532
+251
 Figure 6
 NIL
 NIL
@@ -838,10 +844,10 @@ PENS
 "Averager" 1.0 0 -10899396 true "" ""
 
 PLOT
-1062
-84
-1471
-307
+949
+302
+1358
+525
 Figure 7
 NIL
 NIL
@@ -858,10 +864,10 @@ PENS
 "Expected" 1.0 0 -16777216 true "" ""
 
 PLOT
-962
-327
-1322
-533
+954
+550
+1314
+756
 Figure 9
 NIL
 NIL
@@ -877,6 +883,90 @@ PENS
 "Bruit : niveau faible" 1.0 0 -7858858 true "" "if PercentageNoise = 10 [plotxy ticks (mean [effort] of turtles) plot-pen-down]"
 "Bruit : niveau moyen" 1.0 0 -4079321 true "" "if PercentageNoise = 20 [plotxy ticks (mean [effort] of turtles) plot-pen-down]"
 "Bruit : niveau élevé" 1.0 0 -11221820 true "" "if PercentageNoise = 80 [plotxy ticks (mean [effort] of turtles) plot-pen-down]"
+
+TEXTBOX
+206
+212
+419
+230
+___________________________________
+12
+0.0
+1
+
+TEXTBOX
+192
+233
+252
+254
+Options
+12
+0.0
+1
+
+SLIDER
+193
+283
+437
+316
+Acceptance-note
+Acceptance-note
+0
+100
+30
+5
+1
+%
+HORIZONTAL
+
+CHOOSER
+257
+230
+358
+275
+interact-type
+interact-type
+"Aléatoire" "Noté" "Omniscient"
+1
+
+MONITOR
+425
+614
+499
+659
+nbAgents
+nbBlackAgents\n+ nbRedAgents\n+ nbGreenAgents\n+ nbYellowAgents\n+ nbPurpleAgents\n+ nbBlueAgents
+0
+1
+11
+
+PLOT
+680
+24
+1069
+258
+Taux d'interactions
+time
+interactions
+0.0
+10.0
+0.0
+10.0
+true
+true
+"" ""
+PENS
+"Total" 1.0 0 -16777216 true "" "plot mean [numinc] of turtles"
+"Null Effort" 1.0 0 -13345367 true "" "ifelse (not any? turtles with [classe = 0])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 0]]"
+"Shrinking Effort" 1.0 0 -13791810 true "" "ifelse (not any? turtles with [classe = 1])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 1]]"
+"Replicator" 1.0 0 -2064490 true "" "ifelse (not any? turtles with [classe = 2])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 2]]"
+"Rational" 1.0 0 -5825686 true "" "ifelse (not any? turtles with [classe = 3])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 3]]"
+"Profit Comparator" 1.0 0 -6459832 true "" "ifelse (not any? turtles with [classe = 4])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 4]]"
+"High Effort" 1.0 0 -2674135 true "" "ifelse (not any? turtles with [classe = 5])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 5]]"
+"Average Rational" 1.0 0 -14835848 true "" "ifelse (not any? turtles with [classe = 6])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 6]]"
+"Winner Imitator" 1.0 0 -955883 true "" "ifelse (not any? turtles with [classe = 7])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 7]]"
+"Effort Comparator" 1.0 0 -1184463 true "" "ifelse (not any? turtles with [classe = 8])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 8]]"
+"Averager" 1.0 0 -10899396 true "" "ifelse (not any? turtles with [classe = 9])\n[plot-pen-up]\n[plot mean [numinc] of turtles with [classe = 9]]"
 
 @#$#@#$#@
 ## WHAT IS IT?

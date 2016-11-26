@@ -6,6 +6,11 @@
 ;; TODO no wrap ?
 
 to go-agents
+  ;ask turtles [
+    ;if numinc != 0
+    ;[
+    ;print (word "Type : " classe " Note " (cumnotes / numinc) " NB inter " numinc)  ]
+  ;]
   move-agents
   interact-agents
   update-agents
@@ -26,8 +31,8 @@ to move-agents
       set dir (rdn + 1)
       ; Y avance si elle n'est pas occupée
       if (not any? turtles-on patch-ahead 1
-          and abs ([pxcor] of patch-ahead 1 - [pxcor] of self) <= 1
-          and abs ([pycor] of patch-ahead 1 - [pycor] of self) <= 1)
+        and abs ([pxcor] of patch-ahead 1 - [pxcor] of self) <= 1
+        and abs ([pycor] of patch-ahead 1 - [pycor] of self) <= 1)
       [fd 1]
     ]
   ]
@@ -36,7 +41,7 @@ end
 ; Interaction entre deux turtles (dure un lagTime)
 to interact-agents
   ask turtles[
-    ; si une interaction est en cours  donc la turtle en face existe
+    ; si une interaction est en cours (alors la turtle en face existe)
     ifelse (not step)
     [
       ; on récupère les infos de la turtle en face
@@ -45,6 +50,9 @@ to interact-agents
       set step true
       ; on  ajoute une interaction de faite
       set numinc numinc + 1
+      ; dans tous les cas on note l'agent avec lequel on vient d'interagir
+      let sa-note note-a-donner profit
+      ask turtle-inter [ set cumnotes (cumnotes + sa-note) ]
       ; on marque le patch comme pas en interaction
       ask patch-here [set pcolor white]
       ; on dit qu'on vient de finir une interaction pour l'update juste apres
@@ -54,21 +62,141 @@ to interact-agents
     ]
     ; sinon, aucune interaction n'est en cours
     [
-      ; on récupere l'agent en face (si il existe)
-      let turtle-ahead one-of turtles-on patch-ahead 1
-      ; et si cet agent nous regarde (qu'il est dans la direction opposée à la mienne
-      if (turtle-ahead != nobody and (([dir] of turtle-ahead mod 2) = (dir mod 2)) and ([dir] of turtle-ahead != dir))
-      [; on active l'interaction au niveau de l'agent
-       ;show (word "Ma dir " dir "  -  his dir " [dir] of turtle-ahead)
-        set step false
-        ; on enregistre l'agent avec lequel on interagit
-        set turtle-inter turtle-ahead
-        ; on marque le patch en interaction
-        ;ask patch-here [set pcolor orange]
+      ; si on est en mode aléatoire
+      if (interact-type = "Aléatoire")
+      [
+        ; on récupere l'agent en face à face
+        set turtle-inter interact-alea
+        ; s'il y en a vraiment un
+        if (turtle-inter != nobody)
+        [; on active l'interaction au niveau de l'agent
+          set step false]
       ]
-      ; sinon on ne fait rien
+      ; Si on est en mode notation des agents
+      if (interact-type = "Noté") 
+      [
+        ; on récupere l'agent en face à face
+        set turtle-inter interact-note
+        ; s'il y en a vraiment un
+        if (turtle-inter != nobody)
+        [
+          ; on active l'interaction au niveau de l'agent
+          set step false
+          ; on se tourne face à l'agent et on enregistre l'orientation
+          face turtle-inter
+          set dir (heading / 90) + 1
+          ; on demande à l'agent de se tourner
+          let moi self
+          ask turtle-inter [
+            face moi
+            set dir (heading / 90) + 1]
+        ]
+      ]
+      ; si l'agent est omniscient et peut choisir son partenaire en fonction de son effort
+      if (interact-type = "Omniscient")
+      [
+        ; on récupere l'agent en face à face
+        set turtle-inter interact-omni
+        ; s'il y en a vraiment un
+        if (turtle-inter != nobody)
+        [; on active l'interaction au niveau de l'agent
+          set step false
+          ; on se tourne face à l'agent et on enregistre l'orientation
+          face turtle-inter
+          set dir (heading / 90) + 1
+          ; on demande à l'agent de se tourner
+          let moi self
+          ask turtle-inter [
+            face moi
+            set dir (heading / 90) + 1]
+          
+        ]
+      ]
+      ; aucun autre cas n'a été implémenté
     ]
   ]
+end
+
+; Pour une interaction avec l'agent immédiatement en face sans vérification d'identité
+; Renvoie l'agent avec lequel on va interagir
+to-report interact-alea
+  ; on récupere l'agent en face (si il existe)
+  let turtle-ahead one-of turtles-on patch-ahead 1
+  ; et si cet agent nous regarde (qu'il est dans la direction opposée à la mienne
+  if (turtle-ahead != nobody and (([dir] of turtle-ahead mod 2) = (dir mod 2)) and ([dir] of turtle-ahead != dir))
+  [
+   ;show (word "Ma dir " dir "  -  his dir " [dir] of turtle-ahead)
+    ; on renvoie l'agent avec lequel on veut interagir
+    report turtle-ahead
+    ; on marque le patch en interaction
+    ;ask patch-here [set pcolor orange]
+  ]
+  ; sinon on renvoie du vide
+  report nobody
+end
+
+; Pour une interaction avec l'agent selon sa note et le seuil d'acceptance
+; Renvoie l'agent avec lequel on va interagir
+to-report interact-note
+  ; on récupère les voisins directs qui ne sont pas encore en interaction
+  let turtles-nearby-available (turtles-on neighbors4) with [step]
+  ; on transforme le set en liste pour pouvoir itérer dessus
+  let list-agents []
+  ask turtles-nearby-available [ set list-agents lput self list-agents ]
+  ; pour chacun on compare sa note à la notre selon le seuil d'acceptance
+  let turtle-choisi nobody
+  let note-max 0
+  ; si on n'a pas encore eu d'interaction
+  ; on se place à la moyenne
+  let ma-note note-sur / 2
+  ; sinon
+  if (numinc != 0)
+  [ ; on calcule notre moyenne
+  set ma-note (cumnotes / numinc) ]
+  foreach list-agents
+  [
+    ; si l'agent n'a pas encore eu de note
+    ; on le met à la moyenne (pour leur donner à tous une chance)
+    let note-autre note-sur / 2
+    if ([numinc] of ? != 0)
+    [ ; on récupere la note de l'autre agent
+    set note-autre [cumnotes / numinc] of ? ]
+    ; on calcule l'écart +ou- accepté
+    let ecart-acc ma-note * Acceptance-note / 100 ; c'est un pourcentage
+    if (note-autre >= (ma-note - ecart-acc) and note-autre <= (ma-note + ecart-acc) and note-autre >= note-max)
+    [
+      set note-max note-autre
+      set turtle-choisi ?  
+    ]
+  ]
+  report turtle-choisi
+end
+
+; Pour une interaction avec l'agent selon l'effort qu'il me rapporte
+; Renvoie l'agent avec lequel on va interagir
+to-report interact-omni
+  ; on récupère les voisins directs qui ne sont pas encore en interaction
+  let turtles-nearby-available (turtles-on neighbors4) with [step]
+  if (turtles-nearby-available = nobody) [report nobody]
+  ; on transforme le set en liste pour pouvoir itérer dessus
+  let list-agents []
+  ask turtles-nearby-available [ set list-agents lput self list-agents ]
+  ; pour chacun on choisit celui me rapportant le plus grand profit
+  let profit-max 0
+  let turtle-choisi nobody
+  foreach list-agents
+    [
+      ; on calcule le profit que nous rapporterai cet agent
+      let prof profit-compute profit [profit] of ?
+      ; si ce profit est supérieur à un précédemment calculé
+      if (prof >= profit-max) ; = pour favoriser les interactions
+      [
+       ; on enregistre le nouveau max et le turtle correspondant
+       set profit-max prof
+       set turtle-choisi ? 
+      ]
+    ]
+    report turtle-choisi
 end
 
 ; chaque agent actualise son effort courant
