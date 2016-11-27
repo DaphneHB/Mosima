@@ -187,7 +187,7 @@ to-report interact-omni
   foreach list-agents
     [
       ; on calcule le profit que nous rapporterai cet agent
-      let prof profit-compute profit [profit] of ?
+      let prof profit-compute effort (observe-part-effort ([effort] of ?))
       ; si ce profit est supérieur à un précédemment calculé
       if (prof >= profit-max) ; = pour favoriser les interactions
       [
